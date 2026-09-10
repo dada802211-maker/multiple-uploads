@@ -1,7 +1,7 @@
 <?php
 // PHP開発サーバー用。公開するのはビルド済みフロントとAPIだけです。
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-if ($path === '/api') { require __DIR__ . '/index.php'; return; }
+if ($path === '/api' || $path === '/api/') { require __DIR__ . '/index.php'; return; }
 $root = realpath(__DIR__ . '/../front/dist');
 $file = $root ? realpath($root . $path) : false;
 if ($file && str_starts_with($file, $root . DIRECTORY_SEPARATOR) && is_file($file)) {

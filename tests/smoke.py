@@ -18,8 +18,9 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class Client:
-    def __init__(self, base):
+    def __init__(self, base, endpoint='/api'):
         self.base = base
+        self.endpoint = endpoint
         self.http = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()))
         self.csrf = ''
 
@@ -31,7 +32,7 @@ class Client:
                 headers['X-CSRF-Token'] = self.csrf
             if not isinstance(data, bytes):
                 data = json.dumps(data).encode()
-        request = urllib.request.Request(self.base + '/api?action=' + action, data=data, headers=headers)
+        request = urllib.request.Request(self.base + self.endpoint + '?action=' + action, data=data, headers=headers)
         try:
             response = self.http.open(request)
         except urllib.error.HTTPError as error:
@@ -78,6 +79,10 @@ def main():
                 account = {'name': '登録者', 'email': 'owner@example.test', 'password': 'strong-password-123'}
                 owner.request('register', account, expected=403, csrf=False)
                 owner.request('register', account)
+                slash_client = Client(base, '/api/')
+                slash_client.request('session')
+                slash_client.request('login', account)
+                slash_client.request('login', expected=405)
                 other.request('register', dict(account, name='別ユーザー', email='other@example.test'))
                 guest.request('register', account, expected=409)
                 metadata = {'title': '資料', 'description': '説明文', 'visibility': 'members', 'download_name': '日本語資料.zip'}
