@@ -1,0 +1,2 @@
+# リポジトリをApacheで直接公開した場合も内部データを保護します。
+RedirectMatch 404 ^/(?:.*/)?(?:storage|php|\.git)(?:/|$)

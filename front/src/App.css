@@ -1,0 +1,493 @@
+/* ヘッダーとページ全体 */
+header{
+  height:88px;
+  border-bottom:1px solid #e3e9df;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 max(6%,calc((100% - 1160px)/2));
+  background:#fff}
+  .brand{
+    display:flex;
+    align-items:center;
+    font-size:26px;
+    font-weight:800;
+    letter-spacing:-1px;
+    gap:10px}
+    .brand-dot{
+      color:#77a05d;
+      margin-left:-10px}
+      .brand-icon{
+        display:grid;
+        place-items:center;
+        background:#345a40;
+        color:white;
+        border-radius:10px;
+        font-size:22px;
+        width:38px;
+        height:38px}
+        .account{
+          display:flex;
+          align-items:center;
+          gap:18px;
+          font-size:12px}
+          main{
+            max-width:1160px;
+            margin:auto;
+            padding:0 24px}
+            .hero{
+              display:flex;
+              justify-content:space-between;
+              align-items:center;
+              min-height:360px;
+              padding:50px 30px 40px 0}
+              .eyebrow{
+                display:block;
+                letter-spacing:2px;
+                font-size:10px;
+                font-weight:700;
+                color:#6b8762;
+                margin-bottom:14px}
+                h1{
+                  font-size:40px;
+                  line-height:1.6;
+                  letter-spacing:1px;
+                  margin-bottom:16px}
+                  h1 span{
+                    color:#50734b}
+                    .hero p{
+                      color:#7a867a;
+                      line-height:1.9;
+                      font-size:13px;
+                      margin-bottom:24px}
+                      .primary{
+                        background:#355e42;
+                        color:#fff;
+                        border-radius:8px;
+                        padding:12px 22px;
+                        font-weight:600;
+                        box-shadow:0 3px 5px #2b493115}
+                        .primary:hover{
+                          background:#254a31}
+                          .secondary{
+                            padding:10px 16px;
+                            border:1px solid #dce3da;
+                            background:#fff;
+                            border-radius:8px;
+                            color:#426047}
+                            /* 外部画像に依存しないファイルのイラスト */
+                            .hero-art{
+                              width:300px;
+                              height:260px;
+                              position:relative;
+                              background:radial-gradient(ellipse,#e3eddc 0,transparent 70%)}
+                              .paper{
+                                position:absolute;
+                                width:102px;
+                                height:132px;
+                                background:white;
+                                border:1px solid #d9e2d3;
+                                border-radius:10px;
+                                padding:18px;
+                                color:#90a480;
+                                font-weight:700;
+                                box-shadow:0 15px 25px #304e3410}
+                                .paper span{
+                                  display:block;
+                                  font-size:35px;
+                                  color:#ccd8c7}
+                                  .paper-back{
+                                    left:65px;
+                                    top:14px;
+                                    transform:rotate(-17deg)}
+                                    .paper-front{
+                                      left:154px;
+                                      top:28px;
+                                      transform:rotate(15deg)}
+                                      .zip-art{
+                                        position:absolute;
+                                        left:65px;
+                                        top:99px;
+                                        width:183px;
+                                        height:125px;
+                                        border-radius:12px;
+                                        background:#52714a;
+                                        transform:rotate(-5deg);
+                                        box-shadow:0 20px 25px #304e3425;
+                                        padding:60px 20px 15px;
+                                        color:#fff;
+                                        font-size:25px;
+                                        font-weight:800;
+                                        letter-spacing:2px}
+                                        .zipper{
+                                          position:absolute;
+                                          right:28px;
+                                          top:0;
+                                          line-height:23px;
+                                          font-size:25px;
+                                          color:#b6c995}
+                                          .art-caption{
+                                            position:absolute;
+                                            bottom:0;
+                                            left:77px;
+                                            letter-spacing:3px;
+                                            font-size:9px;
+                                            color:#87927d}
+                                            /* 一覧・検索・アーカイブカード */
+                                            .stats{
+                                              display:flex;
+                                              gap:38px;
+                                              align-items:center;
+                                              padding:21px 26px;
+                                              border:1px solid #e0e6dc;
+                                              border-radius:10px;
+                                              background:#eef2e9;
+                                              font-size:12px;
+                                              color:#78816f}
+                                              .stats strong{
+                                                font-size:22px;
+                                                margin-right:8px;
+                                                color:#3c5439}
+                                                .stats-note{
+                                                  margin-left:auto;
+                                                  font-size:11px}
+                                                  .library{
+                                                    padding-top:40px}
+                                                    .section-heading{
+                                                      display:flex;
+                                                      justify-content:space-between;
+                                                      align-items:center;
+                                                      gap:20px}
+                                                      .section-heading .eyebrow{
+                                                        margin-bottom:8px}
+                                                        h2{
+                                                          font-size:21px;
+                                                          font-weight:700;
+                                                          margin-bottom:20px}
+                                                          .count{
+                                                            font-size:12px;
+                                                            background:#e8eee3;
+                                                            border-radius:20px;
+                                                            padding:3px 9px;
+                                                            margin-left:8px;
+                                                            vertical-align:middle;
+                                                            color:#6d825f}
+                                                            .search{
+                                                              width:300px;
+                                                              margin:0}
+                                                              .search input{
+                                                                font-size:12px;
+                                                                background:transparent}
+                                                                .tabs{
+                                                                  display:flex;
+                                                                  gap:26px;
+                                                                  border-bottom:1px solid #dfe6dc;
+                                                                  margin:12px 0 26px}
+                                                                  .tabs button{
+                                                                    background:none;
+                                                                    padding:13px 3px;
+                                                                    color:#899184;
+                                                                    font-size:12px;
+                                                                    border-bottom:2px solid transparent}
+                                                                    .tabs button.active{
+                                                                      color:#355a3c;
+                                                                      border-color:#355a3c;
+                                                                      font-weight:700}
+                                                                      .archive-grid{
+                                                                        display:grid;
+                                                                        grid-template-columns:repeat(3,minmax(0,1fr));
+                                                                        gap:20px}
+                                                                        .archive-card{
+                                                                          padding:24px;
+                                                                          background:white;
+                                                                          border:1px solid #e0e6dc;
+                                                                          border-radius:12px;
+                                                                          display:flex;
+                                                                          flex-direction:column;
+                                                                          min-width:0}
+                                                                          .card-top{
+                                                                            display:flex;
+                                                                            justify-content:space-between;
+                                                                            align-items:center;
+                                                                            margin-bottom:22px}
+                                                                            .file-icon{
+                                                                              display:grid;
+                                                                              place-items:center;
+                                                                              width:43px;
+                                                                              height:48px;
+                                                                              background:#edf2e7;
+                                                                              border:1px solid #dce6d3;
+                                                                              border-radius:6px;
+                                                                              font-weight:800;
+                                                                              font-size:12px;
+                                                                              color:#678359}
+                                                                              .badge{
+                                                                                font-size:10px;
+                                                                                border-radius:5px;
+                                                                                padding:5px 8px;
+                                                                                white-space:nowrap}
+                                                                                .public{
+                                                                                  color:#57794c;
+                                                                                  background:#eff5e9}
+                                                                                  .members{
+                                                                                    color:#947645;
+                                                                                    background:#faf3e6}
+                                                                                    .archive-card h3{
+                                                                                      font-size:17px;
+                                                                                      overflow-wrap:anywhere;
+                                                                                      margin-bottom:10px}
+                                                                                      .description{
+                                                                                        color:#7a8578;
+                                                                                        font-size:12px;
+                                                                                        line-height:1.9;
+                                                                                        white-space:pre-wrap;
+                                                                                        overflow-wrap:anywhere;
+                                                                                        max-height:160px;
+                                                                                        overflow:auto;
+                                                                                        margin-bottom:20px}
+                                                                                        .filename{
+                                                                                          margin-top:auto;
+                                                                                          font-size:11px;
+                                                                                          color:#7e8b79;
+                                                                                          overflow:hidden;
+                                                                                          text-overflow:ellipsis;
+                                                                                          white-space:nowrap}
+                                                                                          .meta{
+                                                                                            display:flex;
+                                                                                            flex-wrap:wrap;
+                                                                                            justify-content:space-between;
+                                                                                            gap:8px;
+                                                                                            font-size:10px;
+                                                                                            color:#87927e;
+                                                                                            border-top:1px solid #edf0e9;
+                                                                                            padding:14px 0}
+                                                                                            .download-button{
+                                                                                              background:#f0f4eb;
+                                                                                              color:#48613d;
+                                                                                              border:1px solid #dce5d5;
+                                                                                              border-radius:7px;
+                                                                                              padding:11px;
+                                                                                              font-size:12px;
+                                                                                              font-weight:600}
+                                                                                              .download-button:hover{
+                                                                                                background:#e3ecd9}
+                                                                                                .owner-actions{
+                                                                                                  display:flex;
+                                                                                                  justify-content:flex-end;
+                                                                                                  gap:15px;
+                                                                                                  margin-top:12px}
+                                                                                                  .owner-actions button,.text-button{
+                                                                                                    background:none;
+                                                                                                    color:#66805a;
+                                                                                                    padding:8px 0;
+                                                                                                    font-size:12px}
+                                                                                                    .owner-actions .danger{
+                                                                                                      color:#b65d4e}
+                                                                                                      .empty{
+                                                                                                        text-align:center;
+                                                                                                        padding:65px 15px;
+                                                                                                        border:1px dashed #d7dfd0;
+                                                                                                        border-radius:12px;
+                                                                                                        color:#829078}
+                                                                                                        .empty h3{
+                                                                                                          color:#52674a;
+                                                                                                          font-size:17px}
+                                                                                                          .empty p{
+                                                                                                            font-size:12px}
+                                                                                                            .empty-icon{
+                                                                                                              display:block;
+                                                                                                              font-size:42px;
+                                                                                                              color:#a2b594;
+                                                                                                              margin-bottom:18px}
+                                                                                                              footer{
+                                                                                                                display:flex;
+                                                                                                                justify-content:space-between;
+                                                                                                                align-items:center;
+                                                                                                                border-top:1px solid #e0e6dc;
+                                                                                                                margin-top:65px;
+                                                                                                                padding:25px 0 30px;
+                                                                                                                color:#87967e;
+                                                                                                                font-size:11px}
+                                                                                                                footer .brand{
+                                                                                                                  font-size:19px}
+                                                                                                                  /* 入力画面・ダイアログ・トースト */
+                                                                                                                  .editor{
+                                                                                                                    margin-top:28px;
+                                                                                                                    border:1px solid #dce5d4;
+                                                                                                                    background:#fff;
+                                                                                                                    padding:28px;
+                                                                                                                    border-radius:12px}
+                                                                                                                    .segmented{
+                                                                                                                      display:flex;
+                                                                                                                      gap:8px;
+                                                                                                                      margin-bottom:18px;
+                                                                                                                      background:#f2f5ed;
+                                                                                                                      padding:5px;
+                                                                                                                      border-radius:8px}
+                                                                                                                      .segmented button{
+                                                                                                                        flex:1;
+                                                                                                                        padding:10px 5px;
+                                                                                                                        background:none;
+                                                                                                                        border-radius:6px;
+                                                                                                                        color:#7e8b76;
+                                                                                                                        font-size:12px}
+                                                                                                                        .segmented .selected{
+                                                                                                                          background:#fff;
+                                                                                                                          color:#385938;
+                                                                                                                          box-shadow:0 1px 5px #344b3310}
+                                                                                                                          .dropzone{
+                                                                                                                            display:flex;
+                                                                                                                            flex-direction:column;
+                                                                                                                            align-items:center;
+                                                                                                                            gap:8px;
+                                                                                                                            padding:22px;
+                                                                                                                            background:#f9fbf6;
+                                                                                                                            border:1px dashed #b7c9ab;
+                                                                                                                            border-radius:8px;
+                                                                                                                            font-size:12px;
+                                                                                                                            color:#6d8262}
+                                                                                                                            .dropzone input{
+                                                                                                                              max-width:400px;
+                                                                                                                              background:transparent;
+                                                                                                                              border:0;
+                                                                                                                              font-size:12px}
+                                                                                                                              .upload-symbol{
+                                                                                                                                font-size:28px}
+                                                                                                                                .file-summary{
+                                                                                                                                  font-size:12px;
+                                                                                                                                  overflow-wrap:anywhere;
+                                                                                                                                  color:#75856c}
+                                                                                                                                  .form-grid{
+                                                                                                                                    display:grid;
+                                                                                                                                    grid-template-columns:1fr 1fr;
+                                                                                                                                    gap:22px}
+                                                                                                                                    .form-actions{
+                                                                                                                                      display:flex;
+                                                                                                                                      justify-content:flex-end;
+                                                                                                                                      gap:10px;
+                                                                                                                                      margin-top:8px}
+                                                                                                                                      .hint{
+                                                                                                                                        font-size:12px;
+                                                                                                                                        color:#85907f;
+                                                                                                                                        line-height:1.8}
+                                                                                                                                        .modal-backdrop{
+                                                                                                                                          position:fixed;
+                                                                                                                                          inset:0;
+                                                                                                                                          background:#1b2d2266;
+                                                                                                                                          backdrop-filter:blur(4px);
+                                                                                                                                          display:flex;
+                                                                                                                                          align-items:center;
+                                                                                                                                          justify-content:center;
+                                                                                                                                          padding:20px;
+                                                                                                                                          z-index:10}
+                                                                                                                                          .auth-card{
+                                                                                                                                            width:460px;
+                                                                                                                                            max-height:90vh;
+                                                                                                                                            overflow:auto;
+                                                                                                                                            background:#fff;
+                                                                                                                                            border-radius:16px;
+                                                                                                                                            padding:36px;
+                                                                                                                                            position:relative;
+                                                                                                                                            box-shadow:0 30px 100px #182d2430}
+                                                                                                                                            .auth-card p{
+                                                                                                                                              line-height:1.9;
+                                                                                                                                              overflow-wrap:anywhere}
+                                                                                                                                              .close-button{
+                                                                                                                                                position:absolute;
+                                                                                                                                                right:18px;
+                                                                                                                                                top:12px;
+                                                                                                                                                font-size:25px;
+                                                                                                                                                background:none;
+                                                                                                                                                color:#85907f}
+                                                                                                                                                .full-width{
+                                                                                                                                                  width:100%;
+                                                                                                                                                  margin-top:12px}
+                                                                                                                                                  .toasts{
+                                                                                                                                                    position:fixed;
+                                                                                                                                                    bottom:25px;
+                                                                                                                                                    right:25px;
+                                                                                                                                                    z-index:20;
+                                                                                                                                                    display:grid;
+                                                                                                                                                    gap:10px;
+                                                                                                                                                    max-width:min(440px,calc(100vw - 32px))}
+                                                                                                                                                    .toast{
+                                                                                                                                                      padding:16px 18px;
+                                                                                                                                                      background:#345940;
+                                                                                                                                                      color:white;
+                                                                                                                                                      border-radius:9px;
+                                                                                                                                                      display:flex;
+                                                                                                                                                      align-items:center;
+                                                                                                                                                      gap:12px;
+                                                                                                                                                      box-shadow:0 5px 25px #172c2430;
+                                                                                                                                                      font-size:13px}
+                                                                                                                                                      .toast button{
+                                                                                                                                                        background:none;
+                                                                                                                                                        color:white;
+                                                                                                                                                        margin-left:auto;
+                                                                                                                                                        font-size:18px}
+                                                                                                                                                        .toast-error,.danger-bg{
+                                                                                                                                                          background:#ad5246}
+                                                                                                                                                          /* タブレット・スマートフォン */
+                                                                                                                                                          @media(max-width:850px){
+                                                                                                                                                            .archive-grid{
+                                                                                                                                                              grid-template-columns:repeat(2,minmax(0,1fr))}
+                                                                                                                                                              h1{
+                                                                                                                                                                font-size:32px}
+                                                                                                                                                                .hero-art{
+                                                                                                                                                                  transform:scale(.85);
+                                                                                                                                                                  width:260px}
+                                                                                                                                                                  .stats-note{
+                                                                                                                                                                    display:none}
+                                                                                                                                                                  }
+                                                                                                                                                                  @media(max-width:580px){
+                                                                                                                                                                    header{
+                                                                                                                                                                      height:74px;
+                                                                                                                                                                      padding:0 18px}
+                                                                                                                                                                      .brand{
+                                                                                                                                                                        font-size:22px}
+                                                                                                                                                                        .account{
+                                                                                                                                                                          gap:6px}
+                                                                                                                                                                          .account>span{
+                                                                                                                                                                            max-width:90px;
+                                                                                                                                                                            overflow:hidden;
+                                                                                                                                                                            text-overflow:ellipsis;
+                                                                                                                                                                            white-space:nowrap}
+                                                                                                                                                                            .account button{
+                                                                                                                                                                              padding:9px;
+                                                                                                                                                                              font-size:10px}
+                                                                                                                                                                              main{
+                                                                                                                                                                                padding:0 18px}
+                                                                                                                                                                                .hero{
+                                                                                                                                                                                  padding:36px 0;
+                                                                                                                                                                                  min-height:0}
+                                                                                                                                                                                  .hero-art{
+                                                                                                                                                                                    display:none}
+                                                                                                                                                                                    h1{
+                                                                                                                                                                                      font-size:30px}
+                                                                                                                                                                                      .stats{
+                                                                                                                                                                                        gap:20px;
+                                                                                                                                                                                        padding:17px}
+                                                                                                                                                                                        .archive-grid{
+                                                                                                                                                                                          grid-template-columns:1fr}
+                                                                                                                                                                                          .section-heading{
+                                                                                                                                                                                            align-items:flex-start;
+                                                                                                                                                                                            flex-wrap:wrap;
+                                                                                                                                                                                            gap:0}
+                                                                                                                                                                                            .search{
+                                                                                                                                                                                              width:100%;
+                                                                                                                                                                                              margin-bottom:10px}
+                                                                                                                                                                                              .editor{
+                                                                                                                                                                                                padding:20px}
+                                                                                                                                                                                                .form-grid{
+                                                                                                                                                                                                  grid-template-columns:1fr;
+                                                                                                                                                                                                  gap:0}
+                                                                                                                                                                                                  .auth-card{
+                                                                                                                                                                                                    padding:30px 22px}
+                                                                                                                                                                                                    .toasts{
+                                                                                                                                                                                                      right:16px;
+                                                                                                                                                                                                      bottom:16px}
+                                                                                                                                                                                                      footer{
+                                                                                                                                                                                                        gap:18px}
+                                                                                                                                                                                                        .tabs{
+                                                                                                                                                                                                          gap:22px}
+                                                                                                                                                                                                        }
