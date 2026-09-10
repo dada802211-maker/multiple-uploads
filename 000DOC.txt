@@ -8,3 +8,6 @@ zipファイル以外は修正・削除できるようにしてください
 各処理に対してトーストによりメッセージを表示するようにしてください
 コードはファイルを分けて、わかりやすいコメントをつけてください
 README.mdを作成してください
+
+cd C:\laragon\www\multiple-uploads
+powershell -ExecutionPolicy Bypass -File .\start.ps1

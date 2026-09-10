@@ -34,24 +34,24 @@ cd ..
 powershell -ExecutionPolicy Bypass -File .\start.ps1
 ```
 
-[http://127.0.0.1:8000](http://127.0.0.1:8000) を開きます。停止は `Ctrl+C`。初期ユーザーはありません。画面右上から登録してください。
+[http://127.0.0.1:8011](http://127.0.0.1:8011) を開きます。停止は `Ctrl+C`。初期ユーザーはありません。画面右上から登録してください。
 
 `start.ps1` はPHPの一時アップロード先、ファイル上限100M、POST上限110M、最大20ファイルを設定します。PHPがPATHにない場合は、Laragonのターミナルから実行するかPHPへのPATHを設定してください。
 
-フロント開発時はPHPを起動したまま、別ターミナルで次を実行します。
+フロント開発時は次のコマンドだけでPHPとViteを同時に起動します。`start.ps1` を別途実行する必要はありません。すでに8011番ポートでPHPを起動している場合は、先にそのターミナルで停止してください。
 
 ```powershell
 cd front
 npm run dev
 ```
 
-表示されたViteのURLを開きます。`/api` は `127.0.0.1:8000` にプロキシします。`npm run preview` 単体ではAPIを利用できません。
+表示されたViteのURLを開きます。`/api` は `127.0.0.1:8011` にプロキシします。ZIP保存先はこのプロジェクトの `storage/archives/` に固定し、アップロード上限は `start.ps1` と同じです。`Ctrl+C` で両方停止します。PHPの起動に失敗した場合はViteも起動しません。`npm run preview` 単体ではAPIを利用できません。
 
 Linux/macOSではアップロード一時ディレクトリを用意し、同等の設定で起動できます。
 
 ```sh
 mkdir -p storage/tmp
-php -d upload_tmp_dir="$PWD/storage/tmp" -d upload_max_filesize=100M -d post_max_size=110M -d max_file_uploads=20 -d display_errors=0 -S 127.0.0.1:8000 php/router.php
+php -d upload_tmp_dir="$PWD/storage/tmp" -d upload_max_filesize=100M -d post_max_size=110M -d max_file_uploads=20 -d display_errors=0 -S 127.0.0.1:8011 php/router.php
 ```
 
 ## Apache / LaragonのVirtualHost
@@ -106,7 +106,7 @@ tests/smoke.py               一時DBを使うHTTP結合テスト
 start.ps1                   Windows用開発サーバー起動
 ```
 
-`APP_STORAGE` 環境変数で保存先を変更できます。バックアップはサービスを停止し、SQLiteと `archives/` をセットでコピーしてください。
+`APP_STORAGE` 環境変数で保存先を変更できます。ただし、Windows用 `start.ps1` は別プロジェクトとの混同を防ぐため、このプロジェクトの `storage/` に固定します。バックアップはサービスを停止し、SQLiteと `archives/` をセットでコピーしてください。
 
 ## API
 
