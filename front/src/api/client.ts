@@ -5,6 +5,7 @@ type Result = {
   csrf?: string;
   user: User | null;
   archives: Archive[];
+  users: Pick<User, 'id' | 'name'>[];
 };
 // Cookie認証とCSRFトークンをここに集約します。
 export async function api(action: string, body?: FormData | object, id?: number): Promise<Result> {

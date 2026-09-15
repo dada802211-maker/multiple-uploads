@@ -2,6 +2,7 @@
 // ZIPは展開せずに保存。個別ファイルの場合はサーバーでZIPを作成します。
 function createArchive(PDO $db, array $owner): never {
     [$title, $description, $visibility, $downloadName] = metadata($_POST);
+    $allowedUsers = selectedUsers($_POST, (int)$owner['id']);
     $files = $_FILES['files'] ?? null;
     if (!$files || !is_array($files['name']) || count($files['name']) < 1 || count($files['name']) > 20) fail('1〜20個のファイルを選択してください。');
     $mode = $_POST['mode'] ?? '';
@@ -37,9 +38,13 @@ function createArchive(PDO $db, array $owner): never {
             }
             if (!$zip->close()) throw new RuntimeException('ZIP保存失敗');
         }
+        $db->beginTransaction();
         $q = $db->prepare('INSERT INTO archives (user_id,title,description,visibility,download_name,stored_name,size) VALUES (?,?,?,?,?,?,?)');
         $q->execute([$owner['id'], $title, $description, $visibility, $downloadName, $stored, filesize($path)]);
+        saveSelectedUsers($db, (int)$db->lastInsertId(), $allowedUsers);
+        $db->commit();
     } catch (Throwable $e) {
+        if ($db->inTransaction()) $db->rollBack();
         if (is_file($path)) unlink($path);
         throw $e;
     }

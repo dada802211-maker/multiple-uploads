@@ -41,8 +41,24 @@ try {
         session_regenerate_id(true);
         respond(['message' => 'ログアウトしました。', 'csrf' => $_SESSION['csrf']]);
     }
+    if ($action === 'users') {
+        $viewer = requireUser();
+        $q = $db->prepare('SELECT id,name FROM users WHERE id<>? ORDER BY name,id');
+        $q->execute([$viewer['id']]);
+        respond(['users' => $q->fetchAll()]);
+    }
     if ($action === 'list') {
         $items = $db->query('SELECT a.id,a.user_id,a.title,a.description,a.visibility,a.download_name,a.size,a.created_at,u.name AS user_name FROM archives a JOIN users u ON u.id=a.user_id ORDER BY a.id DESC')->fetchAll();
+        $viewer = user();
+        foreach ($items as &$item) {
+            $item['can_download'] = canDownload($item, $viewer);
+            if ($viewer && (int)$viewer['id'] === (int)$item['user_id']) {
+                $q = $db->prepare('SELECT user_id FROM archive_users WHERE archive_id=? ORDER BY user_id');
+                $q->execute([$item['id']]);
+                $item['allowed_user_ids'] = array_map('intval', $q->fetchAll(PDO::FETCH_COLUMN));
+            }
+        }
+        unset($item);
         respond(['archives' => $items]);
     }
     if ($action === 'create') createArchive($db, requireUser());
@@ -52,7 +68,8 @@ try {
         $item = $q->fetch();
         if (!$item) fail('対象のZIPが見つかりません。', 404);
         if ($action === 'download') {
-            if ($item['visibility'] === 'members') requireUser();
+            $viewer = $item['visibility'] === 'public' ? user() : requireUser();
+            if (!canDownload($item, $viewer)) fail('このZIPをダウンロードする権限がありません。', 403);
             $path = STORAGE . '/archives/' . $item['stored_name'];
             if (!is_file($path)) fail('ファイルが見つかりません。', 404);
             session_write_close();
@@ -66,9 +83,14 @@ try {
         }
         if ((int)requireUser()['id'] !== (int)$item['user_id']) fail('登録したユーザーのみ操作できます。', 403);
         if ($action === 'update') {
-            [$title, $description, $visibility, $name] = metadata(input());
+            $data = input();
+            [$title, $description, $visibility, $name] = metadata($data);
+            $allowedUsers = selectedUsers($data, (int)$item['user_id']);
+            $db->beginTransaction();
             $q = $db->prepare('UPDATE archives SET title=?,description=?,visibility=?,download_name=? WHERE id=?');
             $q->execute([$title, $description, $visibility, $name, $item['id']]);
+            saveSelectedUsers($db, (int)$item['id'], $allowedUsers);
+            $db->commit();
             respond(['message' => '登録情報を更新しました。']);
         }
         // ZIP本体は削除せず保管。ユーザーの「ZIP以外を削除」に対応します。
@@ -78,6 +100,7 @@ try {
     }
     fail('APIが見つかりません。', 404);
 } catch (Throwable $e) {
+    if ($db->inTransaction()) $db->rollBack();
     error_log((string)$e);
     fail('サーバー処理に失敗しました。管理者にお問い合わせください。', 500);
 }

@@ -68,7 +68,7 @@ export default function App() {
       </a>
       <div className="account">{user ? <>
         <span>{user.name} さん</span>
-        <button className="secondary" disabled={busy} onClick={() => void run(async () => { const result = await api('logout', {}); setUser(null); setEditor(null); setFilter('all'); notify(result.message); })}>ログアウト</button>
+        <button className="secondary" disabled={busy} onClick={() => void run(async () => { const result = await api('logout', {}); setUser(null); setEditor(null); setFilter('all'); notify(result.message); await refresh(); })}>ログアウト</button>
       </> : <button className="secondary" disabled={loading || loadError} onClick={() => setAuth(true)}>ログイン / ユーザー登録</button>}</div>
     </header>
     <main>
@@ -127,7 +127,7 @@ export default function App() {
         </div> : <div className="archive-grid">{visible.map(item => <article className="archive-card" key={item.id}>
           <div className="card-top">
             <span className="file-icon">ZIP</span>
-            <span className={`badge ${item.visibility}`}>{item.visibility === 'public' ? '一般公開' : '登録ユーザー限定'}</span>
+            <span className={`badge ${item.visibility}`}>{item.visibility === 'public' ? '一般公開' : item.visibility === 'selected' ? '選択ユーザー限定' : '登録ユーザー限定'}</span>
           </div>
           <h3>{item.title}</h3>
           <p className="description">{item.description || '説明はありません。'}</p>
@@ -136,13 +136,13 @@ export default function App() {
             <span>{item.user_name}</span>
             <span>{new Date(item.created_at.replace(' ', 'T') + 'Z').toLocaleDateString('ja-JP')} · {(item.size / 1024 / 1024).toFixed(2)} MB</span>
           </div>
-          <button className="download-button" disabled={busy} onClick={() => {
-            if (item.visibility === 'members' && !user) {
+          <button className="download-button" disabled={busy || (!!user && !item.can_download)} onClick={() => {
+            if (item.visibility !== 'public' && !user) {
               notify('ダウンロードにはログインが必要です。');
               setAuth(true);
               return;
             } void run(async () => { await download(item.id, item.download_name); notify('ZIPをブラウザーに渡しました。保存状況をご確認ください。'); });
-          }}>{item.visibility === 'members' && !user ? 'ログインしてダウンロード' : '↓ ZIPをダウンロード'}</button>{user?.id === item.user_id && <div className="owner-actions">
+          }}>{item.visibility !== 'public' && !user ? 'ログインしてダウンロード' : !item.can_download ? 'ダウンロード権限がありません' : '↓ ZIPをダウンロード'}</button>{user?.id === item.user_id && <div className="owner-actions">
             <button disabled={busy} onClick={() => setEditor(item)}>編集</button>
             <button className="danger" disabled={busy} onClick={() => setDeleting(item)}>登録情報を削除</button>
           </div>}</article>)}</div>}
@@ -152,7 +152,7 @@ export default function App() {
         <span>ひとつにまとめて、つながる。</span>
       </footer>
     </main>
-    {auth && <AuthForm busy={busy} onClose={() => setAuth(false)} onSubmit={(mode, data) => run(async () => { const result = await api(mode, data); setUser(result.user); setAuth(false); notify(result.message); })} />}
+    {auth && <AuthForm busy={busy} onClose={() => setAuth(false)} onSubmit={(mode, data) => run(async () => { const result = await api(mode, data); setUser(result.user); setAuth(false); notify(result.message); await refresh(); })} />}
     {deleting && <div className="modal-backdrop">
       <section className="auth-card" role="dialog" aria-modal="true" aria-labelledby="delete-title">
         <h2 id="delete-title">登録情報を削除しますか？</h2>

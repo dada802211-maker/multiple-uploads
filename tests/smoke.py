@@ -59,6 +59,22 @@ class Client:
 
 
 def main():
+    with tempfile.TemporaryDirectory(prefix='zipshare-migration-') as directory:
+        with closing(sqlite3.connect(Path(directory) / 'app.sqlite')) as db:
+            db.executescript('''
+                CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT NOT NULL, email TEXT NOT NULL UNIQUE, password TEXT NOT NULL);
+                CREATE TABLE archives (id INTEGER PRIMARY KEY, user_id INTEGER NOT NULL REFERENCES users(id), title TEXT NOT NULL, description TEXT NOT NULL, visibility TEXT NOT NULL CHECK(visibility IN ("public", "members")), stored_name TEXT NOT NULL UNIQUE, download_name TEXT NOT NULL, size INTEGER NOT NULL, created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP);
+                INSERT INTO users VALUES (1, 'legacy', 'legacy@example.test', 'hash');
+                INSERT INTO archives VALUES (7, 1, 'legacy archive', 'description', 'members', 'saved.zip', 'download.zip', 123, '2020-01-01 00:00:00');
+            ''')
+            before = db.execute('SELECT * FROM archives').fetchall()
+        for _ in range(2):
+            subprocess.run(['php', '-r', "require 'php/bootstrap.php';"], cwd=ROOT, env=dict(os.environ, APP_STORAGE=directory), check=True, capture_output=True)
+        with closing(sqlite3.connect(Path(directory) / 'app.sqlite')) as db:
+            assert db.execute('SELECT * FROM archives').fetchall() == before
+            db.execute("UPDATE archives SET visibility='selected' WHERE id=7")
+            assert not db.execute('PRAGMA foreign_key_check').fetchall()
+        print('PASS: existing database migration preserves archive data and is repeatable')
     with tempfile.TemporaryDirectory(prefix='zipshare-test-') as directory:
         with socket.socket() as sock:
             sock.bind(('127.0.0.1', 0))
@@ -104,6 +120,39 @@ def main():
                 public_body, _ = guest.request(f'download&id={archive_id}')
                 assert public_body == body
                 owner.upload(dict(metadata, mode='zip'), [('valid.zip', body)])
+                guest.request('users', expected=401)
+                users, _ = owner.request('users')
+                other_id = users['users'][0]['id']
+                assert set(users['users'][0]) == {'id', 'name'}
+                third = Client(base)
+                third.request('session')
+                registered, _ = third.request('register', dict(account, name='第三者', email='third@example.test'))
+                third_id = registered['user']['id']
+                restricted = dict(metadata, visibility='selected', allowed_user_ids=[other_id, third_id])
+                owner.request(f'update&id={archive_id}', restricted)
+                guest.request(f'download&id={archive_id}', expected=401)
+                owner.request(f'download&id={archive_id}')
+                other.request(f'download&id={archive_id}')
+                third.request(f'download&id={archive_id}')
+                owner.request(f'update&id={archive_id}', dict(restricted, allowed_user_ids=[third_id]))
+                other.request(f'download&id={archive_id}', expected=403)
+                listed, _ = other.request('list')
+                denied = next(a for a in listed['archives'] if a['id'] == archive_id)
+                assert not denied['can_download'] and 'allowed_user_ids' not in denied
+                listed, _ = owner.request('list')
+                assert next(a for a in listed['archives'] if a['id'] == archive_id)['allowed_user_ids'] == [third_id]
+                for invalid in [[], [999999], [1], 'invalid', [True]]:
+                    owner.request(f'update&id={archive_id}', dict(restricted, allowed_user_ids=invalid), expected=400)
+                owner.upload(dict(metadata, mode='files', visibility='selected', **{'allowed_user_ids[]': other_id}), [('selected.txt', b'selected')])
+                listed, _ = owner.request('list')
+                selected_id = listed['archives'][0]['id']
+                other.request(f'download&id={selected_id}')
+                third.request(f'download&id={selected_id}', expected=403)
+                owner.request(f'delete&id={selected_id}', {})
+                owner.request(f'update&id={archive_id}', dict(metadata, visibility='members'))
+                other.request(f'download&id={archive_id}')
+                owner.request(f'update&id={archive_id}', dict(metadata, visibility='public', download_name='公開'))
+                guest.request(f'download&id={archive_id}')
                 owner.upload(dict(metadata, mode='zip'), [('fake.zip', b'not-a-zip')], expected=400)
                 guest.upload(dict(metadata, mode='files'), [('file.txt', b'test')], expected=401)
                 with closing(sqlite3.connect(Path(directory) / 'app.sqlite')) as db:

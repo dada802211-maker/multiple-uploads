@@ -8,7 +8,8 @@
 - 複数ファイル（最大20個・合計100MiB）をZIP化、または既存ZIPを1個選択して登録。
 - ZIPは48桁の暗号学的乱数＋`.zip` で保存。ダウンロード名はSQLiteに別途保存。
 - タイトル、説明、登録ユーザー、ダウンロード名、公開範囲、容量、登録日時を記録。
-- 公開範囲は「誰でも」と「登録ユーザーのみ」。後者は**ログイン済みの全ユーザー**が対象です。
+- 公開範囲は「誰でも」「登録ユーザーのみ」「選択したユーザーのみ」。登録ユーザーのみは**ログイン済みの全ユーザー**が対象です。選択したユーザーのみでは、チェックボックスで他のユーザーを複数選択でき、登録者本人と選択されたユーザーがダウンロードできます。編集時に対象を変更でき、1人以上の選択が必要です。
+- 選択候補にはログイン時のみ他ユーザーの名前とIDを表示します。既存DBは初回アクセス時に登録情報を保持したまま自動移行します。
 - タイトル・説明・登録者は未ログインでも一覧に表示されます。制限対象はZIPのダウンロードです。
 - 投稿者のみタイトル・説明・ダウンロード名・公開範囲を編集可能。登録ユーザーはログイン情報から自動設定し、変更不可。
 - **ZIP本体の変更・削除は不可**。「登録情報を削除」はDBの投稿行だけを削除し、ZIP本体は残します。削除後は一覧・ダウンロードAPIからアクセスできません。画面からの復元機能はありません。
@@ -118,8 +119,9 @@ start.ps1                   Windows用開発サーバー起動
 | register / login | POST     | JSONで認証。登録はname・email・password                                                                          |
 | logout           | POST     | ログアウト                                                                                                       |
 | list             | GET      | ZIP登録情報の一覧                                                                                                |
-| create           | POST     | multipart/form-data。files[]、mode（files/zip）、title、description、download_name、visibility（public/members） |
-| update&id=ID     | POST     | JSONでtitle・description・download_name・visibilityを更新                                                        |
+| users            | GET      | ログイン必須。他ユーザーのID・名前を取得                                                                         |
+| create           | POST     | multipart/form-data。files[]、mode（files/zip）、title、description、download_name、visibility（public/members/selected）。selectedではallowed_user_ids[]でユーザーIDを指定 |
+| update&id=ID     | POST     | JSONでtitle・description・download_name・visibilityを更新。selectedではallowed_user_ids配列が必須                                                        |
 | delete&id=ID     | POST     | 投稿者のみ登録情報を削除。ZIPは保持                                                                              |
 | download&id=ID   | GET      | 権限を検証してZIP配信                                                                                            |
 

@@ -1,5 +1,6 @@
-import { useState, type FormEvent } from 'react';
-import type { Archive, Metadata } from '../types/archive';
+import { useEffect, useState, type FormEvent } from 'react';
+import type { Archive, Metadata, User } from '../types/archive';
+import { api } from '../api/client';
 type Props = {
   item: Archive | null;
   busy: boolean;
@@ -10,9 +11,26 @@ type Props = {
 export default function ArchiveForm({ item, busy, onSave, onCancel, notify }: Props) {
   const [mode, setMode] = useState('files');
   const [files, setFiles] = useState<File[]>([]);
+  const [visibility, setVisibility] = useState(item?.visibility || 'public');
+  const [selected, setSelected] = useState<number[]>(item?.allowed_user_ids || []);
+  const [users, setUsers] = useState<Pick<User, 'id' | 'name'>[]>([]);
+  const [usersState, setUsersState] = useState('loading');
+  const [retry, setRetry] = useState(0);
+  useEffect(() => {
+    let active = true;
+    api('users').then(result => { if (active) { setUsers(result.users); setUsersState('ready'); } })
+      .catch(() => { if (active) setUsersState('error'); });
+    return () => { active = false; };
+  }, [retry]);
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+    const ids = visibility === 'selected' ? selected : [];
+    if (visibility === 'selected' && (usersState !== 'ready' || !ids.length)) {
+      notify('ダウンロードを許可するユーザーを1人以上選択してください。', true);
+      return;
+    }
+    ids.forEach(id => data.append('allowed_user_ids[]', String(id)));
     if (!item) {
       if (!files.length || files.length > 20 || files.reduce((sum, file) => sum + file.size, 0) > 100 * 1024 * 1024) {
         notify('1〜20個、合計100MB以内のファイルを選択してください。', true);
@@ -24,7 +42,7 @@ export default function ArchiveForm({ item, busy, onSave, onCancel, notify }: Pr
       await onSave(data);
     }
     else {
-      await onSave(Object.fromEntries(data) as Metadata);
+      await onSave({ title: String(data.get('title')), description: String(data.get('description')), download_name: String(data.get('download_name')), visibility, allowed_user_ids: ids });
     }
   }
   return <form onSubmit={submit} className="editor">
@@ -57,15 +75,24 @@ export default function ArchiveForm({ item, busy, onSave, onCancel, notify }: Pr
         <label>ダウンロード時のファイル名<input name="download_name" required maxLength={150} defaultValue={item?.download_name} placeholder="project-files.zip" />
           <small>.zip は自動で補完されます</small>
         </label>
-        <label>ダウンロードできる人<select name="visibility" defaultValue={item?.visibility || 'public'}>
+        <label>ダウンロードできる人<select name="visibility" value={visibility} onChange={e => setVisibility(e.target.value as Archive['visibility'])}>
           <option value="public">誰でもダウンロード可能</option>
           <option value="members">登録ユーザーのみ</option>
+          <option value="selected">選択したユーザーのみ</option>
         </select>
         </label>
       </div>
+      {visibility === 'selected' && <fieldset className="user-permissions">
+        <legend>ダウンロードを許可するユーザー</legend>
+        <p className="hint">複数人を選択できます。登録者本人もダウンロードできます。</p>
+        {usersState === 'loading' ? <p role="status">ユーザーを読み込んでいます…</p> : usersState === 'error' ? <p role="alert">ユーザーを読み込めませんでした。<button type="button" className="secondary" onClick={() => { setUsersState('loading'); setRetry(value => value + 1); }}>再試行</button></p> : users.length === 0 ? <p>選択できる他のユーザーがいません。</p> : <div className="user-options">{users.map(account => <label key={account.id} className="user-option">
+          <input type="checkbox" checked={selected.includes(account.id)} onChange={e => setSelected(old => e.target.checked ? [...old, account.id] : old.filter(id => id !== account.id))} />
+          <span>{account.name} <small>ユーザーID: {account.id}</small></span>
+        </label>)}</div>}
+      </fieldset>}
       <div className="form-actions">
         <button type="button" className="secondary" onClick={onCancel}>キャンセル</button>
-        <button className="primary">{busy ? '処理中…' : item ? '変更を保存' : 'ZIPを登録する'}</button>
+        <button className="primary" disabled={visibility === 'selected' && (usersState !== 'ready' || !selected.length)}>{busy ? '処理中…' : item ? '変更を保存' : 'ZIPを登録する'}</button>
       </div>
     </fieldset>
   </form>;

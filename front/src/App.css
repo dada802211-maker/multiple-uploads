@@ -491,3 +491,10 @@ header{
                                                                                                                                                                                                         .tabs{
                                                                                                                                                                                                           gap:22px}
                                                                                                                                                                                                         }
+
+.user-permissions { margin-top: 12px; }
+.user-permissions legend { font-weight: 600; margin-bottom: 10px; }
+.user-options { max-height: 240px; overflow-y: auto; border: 1px solid #dce3da; border-radius: 8px; padding: 12px; }
+.user-option { display: flex; align-items: center; gap: 12px; margin: 0; padding: 8px; overflow-wrap: anywhere; }
+.user-option input { width: 18px; height: 18px; margin: 0; flex-shrink: 0; }
+.badge.selected { background: #eee8f7; color: #69448a; }
